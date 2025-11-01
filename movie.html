@@ -23,6 +23,55 @@
     // Step 5: Display results inside the "result" div
     // Step 6: Handle cases where movie not found
     // Step 7 (Challenge): Add dropdown for movie type and include in API URL
+    function searchMovie() {
+      const movieName = document.getElementById('movieInput').value;
+      
+      // Check if movie name is entered
+      if (!movieName.trim()) {
+        document.getElementById('result').innerHTML = "Please enter a movie name!";
+        return;
+      }
+
+      const apiKey = '966c4f4f';
+      const url = `https://www.omdbapi.com/?apikey=${apiKey}&t=${movieName}`;
+
+      // Show loading message
+      document.getElementById('result').innerHTML = "Searching...";
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.Response === "True") {
+            displayMovie(data);
+          } else {
+            document.getElementById('result').innerHTML = "Movie not found!";
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching movie:', error);
+          document.getElementById('result').innerHTML = "Error occurred while searching!";
+        });
+    }
+
+    function displayMovie(movie) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = `
+        <div style="max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+          <h2>${movie.Title} (${movie.Year})</h2>
+          <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300x400?text=No+Image'}" 
+               alt="${movie.Title} poster" 
+               style="width: 200px; height: auto; float: left; margin-right: 20px; border-radius: 4px;">
+          <p><strong>Genre:</strong> ${movie.Genre}</p>
+          <p><strong>Director:</strong> ${movie.Director}</p>
+          <p><strong>Actors:</strong> ${movie.Actors}</p>
+          <p><strong>Plot:</strong> ${movie.Plot}</p>
+          <p><strong>IMDb Rating:</strong> ${movie.imdbRating}/10</p>
+          <p><strong>Runtime:</strong> ${movie.Runtime}</p>
+          <p><strong>Released:</strong> ${movie.Released}</p>
+          <div style="clear: both;"></div>
+        </div>
+      `;
+    }
   </script>
 </body>
 </html>
